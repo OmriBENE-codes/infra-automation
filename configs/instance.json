@@ -1,0 +1,7 @@
+{
+    "name": "kiki",
+    "os": "winux",
+    "cpu": "2 cores",
+    "ram": "400 mb",
+    "disk_space": "5 tb"
+}
