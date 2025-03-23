@@ -13,8 +13,8 @@ class machine:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-    def machine_dict(self):
-        return {"name" : self.name, "os" : self.os, "cpu" : self.cpu,"ram": self.ram, "disk_space" : self.disk_space}
+    def machine_list(self):
+        return [self.name, self.os, self.cpu, self.ram, self.disk_space]
     
     def logging(self):
         self.logger.info(f"Machine {self.name} with {self.os} Successfully initialized!")

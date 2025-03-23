@@ -15,13 +15,14 @@ def machine_details():
     ram = input('Enter the amount of RAM to provide: ')
     disk_space = input("Enter how much space to provide: ")
 
-    machine = {
-        'name': name, 
-        'os': os, 'cpu': cpu, 
-        'ram': ram, 
-        'disk_space': disk_space
+    machine = [
+         name, 
+         os,  
+         cpu, 
+         ram, 
+         disk_space
 
-}
+    ]
 
     print(f"name: " + name, "os: "+ os, "cpu: " +cpu, "ram: " +ram, "disk_space: " +disk_space)
     return machine
@@ -47,13 +48,27 @@ def input_validation(machine_details):
 
 
 def json_details(machine):
-    with open('configs/instance.json', "w") as file:
-        json.dump(machine, file, indent=4)
+    path = 'configs/instance.json'
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        try:
+            with open(path, "r") as file:
+                json_data = json.load(file)
+                if not isinstance(json_data, list):
+                    print(f"Warning: The existing data is not a list. Reinitializing to an empty list.")
+                    json_data = []
+
+        except (FileNotFoundError, json.JSONDecodeError):
+            json_data = []
+
+        json_data.append(machine)
 
     
-    with open('configs/instance.json', "r") as file2:
-        data = json.load(file2)
-        print("Loaded data from JSON file:\n", data)
+        with open('configs/instance.json', "w") as file:
+            json.dump(json_data, file, indent=4)
+        print("The machine details have been saved to configs/instance.json")
+    except Exception as e:
+        print(f'Error happend when saving to JSON: {str(e)}')
 
 
 def bash_script():
@@ -63,10 +78,7 @@ def bash_script():
         print(f"Error have occured: {e}")
 
 
-
-
-
-
+  
 
 machine = machine_details()
 if input_validation(machine):
