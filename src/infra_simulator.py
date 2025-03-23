@@ -2,6 +2,7 @@ from jsonschema import validate, ValidationError
 import json
 import os
 import subprocess
+import machine
 
 '''
 Here the users are asked to provide through input 
