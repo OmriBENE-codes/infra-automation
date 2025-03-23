@@ -47,13 +47,12 @@ def input_validation(machine_details):
 
 
 def json_details(machine):
-    path = "C:/Users/USER/Devops project/infra_automation/configs/instance.json"
-    with open(path, "w") as file:
+    with open('configs/instance.json', "w") as file:
         json.dump(machine, file, indent=4)
 
     
-    with open(path, "r") as file:
-        data = json.load(file)
+    with open('configs/instance.json', "r") as file2:
+        data = json.load(file2)
         print("Loaded data from JSON file:\n", data)
 
 
