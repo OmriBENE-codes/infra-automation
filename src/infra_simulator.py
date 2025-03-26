@@ -1,8 +1,5 @@
-from jsonschema import validate, ValidationError
-import json
-import os
 import subprocess
-import machine
+from machine import machine_details, json_details
 
 '''
 Here the users are asked to provide through input 

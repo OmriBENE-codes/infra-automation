@@ -1,5 +1,5 @@
 import logging
-from jsonschema import validate, ValidationError
+from pydantic import BaseModel, Field
 import json
 import os
 
