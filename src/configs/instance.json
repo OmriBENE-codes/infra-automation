@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Alfred",
+        "os": "windoes",
+        "cpu": 3.0,
+        "ram": 16,
+        "disk_space": 250
+    },
+    {
+        "name": "osmodius",
+        "os": "mac",
+        "cpu": 2.0,
+        "ram": 1,
+        "disk_space": 12
+    },
+    {
+        "name": "duhast",
+        "os": "linux",
+        "cpu": 4.0,
+        "ram": 20,
+        "disk_space": 14
+    },
+    {
+        "name": "k",
+        "os": "3",
+        "cpu": 4.0,
+        "ram": 5,
+        "disk_space": 6
+    }
+]
