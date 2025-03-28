@@ -1,5 +1,5 @@
 import logging
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 import json
 import os
 
@@ -7,88 +7,66 @@ import os
 # Machine class providing place to hold the Virtual machine details.
 #includs returning dictionary and logging function
 
-class machine:
+
+LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
+LOG_FILE = os.path.join(LOG_DIR, "provisioning.log")
+
+os.makedirs(LOG_DIR, exist_ok=True)  # Ensure logs directory exists
+os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
+logging.basicConfig(filename=LOG_FILE, level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+class Machine(BaseModel):
+    name: str = Field(..., min_length=1, description="Machine name")
+    os: str = Field(..., min_length=1, description="Operating System (e.g windows, linux, mac)")
+    cpu: float = Field(..., gt=0, description="Number of CPUs")
+    ram: int = Field(..., gt=0, description="PRAM in GB")
+    disk_space: int = Field(..., gt=0, description="Disk space in GB")
     
     
- def machine_details():
-        name = input("Enter machine name: ")
-        os = input('Enter the os: ')
-        cpu = input('Enter the amount of CPUs: ')
-        ram = input('Enter the amount of RAM to provide: ')
-        disk_space = input("Enter how much space to provide: ")
-
-        machine = [
-             name, 
-             os,  
-             cpu, 
-             ram, 
-             disk_space
-
-    ]
-
-        print(f"name: " + name, "os: "+ os, "cpu: " +cpu, "ram: " +ram, "disk_space: " +disk_space)
-        return machine
-
-
-
-def input_validation(machine_details):
-    schema = {
-
-            "name": {"type": "string"},
-            "os": {"type": "string"},
-            "cpu": {"type": "float"},
-            "ram": {"type": "string"},
-            "disk_space": {"type": "string"}
-    }
-
-    try:
-        validate(instance = machine_details, schema = schema)
-    except ValidationError as e:
-        print(f'Invalid input: {e.message}')
-        return False
-    return True
-
-
-def json_details(machine):
-        path = 'configs/instance.json'
+def machine_details(): #function to get and store the machine details inputted by users.
+    while True:
         try:
-            os.makedirs(os.path.dirname(path), exist_ok=True)
-            try:
-                with open(path, "r") as file:
-                    json_data = json.load(file)
-                    if not isinstance(json_data, list):
-                        print(f"Warning: The existing data is not a list. Reinitializing to an empty list.")
-                        json_data = []
+            name = input("Enter machine name: ")
+            os = input("Enter the OS: ")
+            cpu = int(input("Enter the number of CPUs: "))
+            ram = int(input("Enter RAM size in GB: "))
+            disk_space = int(input("Enter disk space in GB: "))
 
-            except (FileNotFoundError, json.JSONDecodeError):
-                json_data = []
+            machine = Machine(name=name, os=os, cpu=cpu, ram=ram, disk_space=disk_space)
+            logging.info(f'Machine details entered by the user: {machine}')
+            return machine.dict()
+        except ValidationError as e:
+             print("\nInvalid input. Please correct the following part: ")
+             for error in e.errors():
+                print(f" - {error['loc'][0]}: {error['msg']}")
+        except ValueError:
+             print('Invalid input type. Please enter the numbers requested.')
 
-            json_data.append(machine)
+def save_machine_details(machine_data): #machine details --> json saving function
+    path = 'configs/instance.json'
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
 
-    
-            with open('configs/instance.json', "w") as file:
-                json.dump(json_data, file, indent=4)
-            print("The machine details have been saved to configs/instance.json")
-        except Exception as e:
-            print(f'Error happend when saving to JSON: {str(e)}')
+        try: #Loads the existing data from the log file
+            with open(path, "r") as file:
+                json_data = json.load(file)
+                if not isinstance(json_data, list):
+                    logging.warning(f"Warning: The existing data is not a list. Reinitializing to an empty list.")
+                    json_data = []
 
+        except (FileNotFoundError, json.JSONDecodeError):
+            json_data = []
 
-    
-def __init__(self, name, os, cpu, ram, disk_space):
-        self.name = name
-        self.os = os
-        self.cpu = cpu
-        self.ram = ram
-        self.disk_space = disk_space
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
+        json_data.append(machine_data) #append to the json file 
+        
+        with open(path, "w") as file:
+            json.dump(json_data, file, indent=4)
+        logging.info("The machine details was successfully saved into Instance.json file")
+        print("The machine details have been saved successfully!")
+    except Exception as e:
+        logging.info(f"Error saving machine details: {str(e)}")
+        print(f'Error happend when saving machine detwails into JSON')
 
-def machine_list(self):
-        return [self.name, self.os, self.cpu, self.ram, self.disk_space]
-    
-def logging(self):
-        self.logger.info(f"Machine {self.name} with {self.os} Successfully initialized!")
-
-machine = machine.machine_details()
-if input_validation(machine):
-    json_details(machine)
+if __name__ == "__main__":
+    machine_data = machine_details()
+    save_machine_details(machine_data)
