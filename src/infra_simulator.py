@@ -2,10 +2,8 @@ import subprocess
 import logging
 from machine import Machine, machine_details, save_machine_details
 import os
-'''
 
 
-'''
 LOG_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
 LOG_FILE = os.path.join(LOG_DIR, "provisioning.log")
 

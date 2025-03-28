@@ -26,5 +26,12 @@
         "cpu": 4.0,
         "ram": 5,
         "disk_space": 6
+    },
+    {
+        "name": "name",
+        "os": "kuku",
+        "cpu": 1.0,
+        "ram": 3,
+        "disk_space": 4
     }
 ]
